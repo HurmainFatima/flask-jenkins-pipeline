@@ -23,10 +23,12 @@ pipeline {
             steps {
                 bat '''
                 call %VENV%\\Scripts\\activate
+                set PYTHONPATH=.
                 pytest
                 '''
             }
         }
+
 
         stage('Build Application') {
             steps {
