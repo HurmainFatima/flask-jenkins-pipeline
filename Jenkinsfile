@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        python 'Python3'
-    }
-
     environment {
         VENV = 'venv'
     }
@@ -14,13 +10,14 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/your-username/flask-app.git'
+                    url: 'https://github.com/USERNAME/flask-jenkins-pipeline.git'
             }
         }
 
         stage('Install Dependencies') {
             steps {
                 sh '''
+                python --version
                 python -m venv ${VENV}
                 . ${VENV}/bin/activate
                 pip install --upgrade pip
@@ -41,9 +38,9 @@ pipeline {
         stage('Build Application') {
             steps {
                 sh '''
-                echo "Building the Flask application..."
+                echo "Building application..."
                 mkdir -p build
-                cp -r . build/
+                cp -r app.py templates requirements.txt build/
                 '''
             }
         }
@@ -51,10 +48,9 @@ pipeline {
         stage('Deploy Application') {
             steps {
                 sh '''
-                echo "Deploying application..."
+                echo "Simulating deployment..."
                 mkdir -p /tmp/flask-deploy
                 cp -r build/* /tmp/flask-deploy/
-                echo "Deployment completed successfully."
                 '''
             }
         }
@@ -62,10 +58,10 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline executed successfully!'
+            echo 'Pipeline completed successfully'
         }
         failure {
-            echo 'Pipeline failed!'
+            echo 'Pipeline failed'
         }
     }
 }
