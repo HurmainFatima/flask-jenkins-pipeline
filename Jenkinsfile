@@ -9,10 +9,10 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh '''
+                bat '''
                 python --version
-                python -m venv ${VENV}
-                . ${VENV}/bin/activate
+                python -m venv %VENV%
+                call %VENV%\\Scripts\\activate
                 pip install --upgrade pip
                 pip install -r requirements.txt
                 '''
@@ -21,8 +21,8 @@ pipeline {
 
         stage('Run Unit Tests') {
             steps {
-                sh '''
-                . ${VENV}/bin/activate
+                bat '''
+                call %VENV%\\Scripts\\activate
                 pytest
                 '''
             }
@@ -30,20 +30,22 @@ pipeline {
 
         stage('Build Application') {
             steps {
-                sh '''
-                echo "Building application..."
-                mkdir -p build
-                cp -r app.py templates requirements.txt build/
+                bat '''
+                echo Building application...
+                if not exist build mkdir build
+                xcopy app.py build\\ /Y
+                xcopy requirements.txt build\\ /Y
+                xcopy templates build\\templates\\ /E /I /Y
                 '''
             }
         }
 
         stage('Deploy Application') {
             steps {
-                sh '''
-                echo "Simulating deployment..."
-                mkdir -p /tmp/flask-deploy
-                cp -r build/* /tmp/flask-deploy/
+                bat '''
+                echo Simulating deployment...
+                if not exist C:\\flask-deploy mkdir C:\\flask-deploy
+                xcopy build C:\\flask-deploy\\ /E /I /Y
                 '''
             }
         }
