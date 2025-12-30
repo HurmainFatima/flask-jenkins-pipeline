@@ -7,13 +7,6 @@ pipeline {
 
     stages {
 
-        stage('Clone Repository') {
-            steps {
-                git branch: 'main',
-                    url: 'https://github.com/USERNAME/flask-jenkins-pipeline.git'
-            }
-        }
-
         stage('Install Dependencies') {
             steps {
                 sh '''
